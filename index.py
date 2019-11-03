@@ -5,3 +5,6 @@
 python file that once executed generate
 the indexes of the Search engines
 """
+import utils
+import index_utils
+

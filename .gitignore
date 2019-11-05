@@ -126,4 +126,4 @@ dmypy.json
 .idea/
 
 # Wikipedia
-Wikipedia/
+Wikipedia/*.html

@@ -4,3 +4,8 @@
 """
 python file that gathers the function used in parser.py
 """
+import os
+
+list_html_file = os.listdir('Wikipedia/')
+
+print(type(list_html_file))

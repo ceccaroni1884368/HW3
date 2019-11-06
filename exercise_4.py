@@ -11,7 +11,7 @@ def algorithm_palindrome_sub_string_len(string, idx_start, idx_end):
     """
     recursive algorithm
     """
-    
+
     if idx_end < idx_start:
         return 0
     if idx_end == idx_start:

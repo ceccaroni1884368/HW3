@@ -4,8 +4,14 @@
 """
 python file that gathers the function used in parser.py
 """
-import os
+from bs4 import BeautifulSoup as bs
+import pandas as pd
 
-list_html_file = os.listdir('Wikipedia/')
 
-print(type(list_html_file))
+def html_to_dict(file_name):
+    with open(file_name, 'rb') as html:
+        soup = bs(html, 'html.parser')
+    for x in soup.find_all('p'):
+        print(x.text)
+
+html_to_dict('Wikipedia/article_3.html')

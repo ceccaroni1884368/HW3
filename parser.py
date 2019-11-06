@@ -8,3 +8,5 @@ html pages and save those in tsv files
 """
 import utils
 import parser_utils
+
+print(utils.list_links_file_in_directory_by_extension('Wikipedia/', '.html'))

@@ -8,6 +8,8 @@ of the algorithm that solves problem 4.
 
 
 def algorithm_palindrome_sub_string_len(string, idx_start, idx_end):
+    if idx_end < idx_start:
+        return 0
     if idx_end == idx_start:
         return 1
     if string[idx_start] == string[idx_end]:

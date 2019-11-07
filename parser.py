@@ -9,4 +9,11 @@ html pages and save those in tsv files
 import utils
 import parser_utils
 
-print(utils.list_links_file_in_directory_by_extension('Wikipedia/', '.html'))
+list_info_film = []
+for link in utils.list_links_file_in_directory_by_extension('Wikipedia/', '.html'):
+    print(link)
+    list_info_film.append(parser_utils.html_to_dict(link))
+
+
+parser_utils.save_tsv_dataframe(list_info_film)
+

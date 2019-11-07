@@ -72,4 +72,4 @@ def save_tsv_dataframe(list_info_film):
     dataframe = dataframe.dropna(subset=['Plot'])
     n_file = input("Number of movies file (1, 2, 3): ")
     name_file = 'Wikipedia/movie' + n_file + '.tsv'
-    dataframe.to_csv(name_file, delimiter='\t', index=False)
+    dataframe.to_csv(name_file, sep='\t', index=False)

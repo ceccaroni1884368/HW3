@@ -7,6 +7,7 @@ need in more than one of the previous
 files like (collector, parser, etc.)
 """
 import os
+import pandas as pd
 
 
 def list_links_file_in_directory_by_extension(directory, extension):
@@ -16,3 +17,8 @@ def list_links_file_in_directory_by_extension(directory, extension):
         if extension in x:
             return_list.append(directory + x)
     return return_list
+
+
+def load_data(path):
+    dtframe = pd.read_csv(path, sep='\t')
+    return dtframe

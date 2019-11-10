@@ -38,6 +38,10 @@ def html_to_dict(file_name):
             plot = re.sub(r'\[\d*\]', '', plot)
             film_dict.update({"Plot": plot})
 
+        # URL
+        urls = soup.find("link", {"rel": "canonical", 'href': True})
+        film_dict.update({"Wikipedia Url": urls.get('href')})
+
         # Film Infobox
         infobox = soup.find_all("table", {"class": "infobox vevent"})
 
@@ -93,7 +97,7 @@ def html_to_dict(file_name):
     return film_dict
 
 
-#print(html_to_dict('Wikipedia/article_199.html'))
+print(html_to_dict('Wikipedia/article_199.html'))
 
 def save_tsv_dataframe(list_info_film):
     dataframe = pd.DataFrame(list_info_film)

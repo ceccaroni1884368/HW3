@@ -10,6 +10,40 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import numpy as np
+from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
+from nltk.stem import PorterStemmer
+import json
+
+
+def get_vocabulary(documents):
+    tokenizer = RegexpTokenizer(r'\w+')
+    ps = PorterStemmer()
+    stop_words = set(stopwords.words('english'))
+
+    token = sum([tokenizer.tokenize(document) for document in documents], [])
+    vocabulary = set(ps.stem(w) for w in token if not w in stop_words)
+
+    return vocabulary
+
+
+def documents_index(documents, vocabulary):
+    idx = {}
+
+    for word in vocabulary:
+        idx[word] = []
+        for i in range(len(documents)):
+            if word in documents[i]:
+                idx[word].append(i)
+    return idx
+
+
+def save_inverted_index(documents):
+    vocabulary = get_vocabulary(documents)
+    idx = documents_index(documents, vocabulary)
+
+    with open('inverted_index.json', 'w') as f:
+        json.dump(idx, f)
 
 
 # https://medium.com/@deangelaneves/how-to-build-a-search-engine-from-scratch-in-python-part-1-96eb240f9ecb

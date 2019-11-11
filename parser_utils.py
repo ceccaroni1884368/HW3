@@ -13,7 +13,7 @@ import pandas as pd
 
 def dividi_parole(string):
     for i in range(1, len(string) - 1):
-        if string[i - 1].islower() and string[i].isupper() and not string[i-2:i] == "Mc":
+        if string[i - 1].islower() and string[i].isupper():
             string = string[0:i] + ", " + string[i:len(string)]
         elif string[i - 1] == '.' and string[i].isupper():
             string = string[0:i] + ", " + string[i:len(string)]

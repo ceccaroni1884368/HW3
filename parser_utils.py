@@ -65,7 +65,7 @@ def html_to_dict(file_name):
                 tr[i] = unicodedata.normalize("NFKD", tr[i])
 
                 if 'Directed by' in tr[i][:11]:
-                    film_dict.update({"Directed by": dividi_parole(tr[i][11:].strip(', '))})
+                    film_dict.update({"Directed by": tr[i][11:].strip(', ')})
                 elif 'Produced by' in tr[i][:11]:
                     film_dict.update({"Produced by": dividi_parole(tr[i][11:].strip(', '))})
                 elif 'Written by' in tr[i][:10]:

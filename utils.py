@@ -20,5 +20,5 @@ def list_links_file_in_directory_by_extension(directory, extension):
 
 
 def load_data(path):
-    dtframe = pd.read_csv(path, sep='\t')
-    return dtframe
+    dataframe = pd.read_csv(path, sep='\t')
+    return dataframe

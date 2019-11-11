@@ -13,16 +13,17 @@ import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import PorterStemmer
+from nltk.stem.snowball import SnowballStemmer
 import json
 
 
 def get_vocabulary(documents):
     tokenizer = RegexpTokenizer(r'\w+')
-    ps = PorterStemmer()
+    stemmer = SnowballStemmer('english')
     stop_words = set(stopwords.words('english'))
 
     token = sum([tokenizer.tokenize(document) for document in documents], [])
-    vocabulary = set(ps.stem(w) for w in token if not w in stop_words)
+    vocabulary = set(stemmer.stem(w) for w in token if w not in stop_words)
 
     return vocabulary
 
@@ -33,7 +34,7 @@ def documents_index(documents, vocabulary):
     for word in vocabulary:
         idx[word] = []
         for i in range(len(documents)):
-            if word in documents[i]:
+            if word in documents[i] or word.capitalize() in documents[i]:
                 idx[word].append(i)
     return idx
 

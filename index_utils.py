@@ -12,31 +12,54 @@ import pandas as pd
 import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
-from nltk.stem import PorterStemmer
+from nltk.stem.porter import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
+from nltk.stem import WordNetLemmatizer
 import json
+import utils
+
+def tokenizer(text):
+    tkenizer = RegexpTokenizer(r'\w+')
+    return tkenizer.tokenize(text)
+
+
+def remove_stop_word(text):
+    return [w for w in text if w not in stopwords.words('english')]
+
+
+def word_lemmatizer(text):
+    lemmatizater = WordNetLemmatizer()
+    return [lemmatizater.lemmatize(w) for w in text]
+
+
+def word_stemmer(text):
+    # stemmer = PorterStemmer()
+    stemmer = SnowballStemmer("english")
+    return [stemmer.stem(w) for w in text]
+
+
+def format_document(document):
+    return " ".join(word_stemmer(remove_stop_word(tokenizer(document.lower()))))
 
 
 def get_vocabulary(documents):
-    tokenizer = RegexpTokenizer(r'\w+')
-    stemmer = SnowballStemmer('english')
-    stop_words = set(stopwords.words('english'))
-
-    token = sum([tokenizer.tokenize(document) for document in documents], [])
-    vocabulary = set(stemmer.stem(w) for w in token if w not in stop_words)
+    vocabulary = set()
+    for document in documents:
+        vocabulary = vocabulary.union(set(tokenizer(document)))
 
     return vocabulary
 
 
 def documents_index(documents, vocabulary):
-    idx = {}
-
+    documents_idx = {}
     for word in vocabulary:
-        idx[word] = []
-        for i in range(len(documents)):
-            if word in documents[i] or word.capitalize() in documents[i]:
-                idx[word].append(i)
-    return idx
+        documents_idx[word] = set()
+        for idx in range(len(documents)):
+            if word in documents[idx].lower():
+                documents_idx[word].add(idx)
+        documents_idx[word] = list(documents_idx[word])
+
+    return documents_idx
 
 
 def save_inverted_index(documents):
@@ -70,3 +93,5 @@ def cosine_similar(search_keys, dataframe, label, min_talks=1):
 
 
 # cosine_similar('Doctors', dataframe.fillna('None'), 'Title', 3)
+
+dataframe = utils.load_data(utils.list_links_file_in_directory_by_extension('Wikipedia/', '.tsv')[0])

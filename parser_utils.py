@@ -19,6 +19,7 @@ def dividi_parole(string):
             string = string[0:i] + ", " + string[i:len(string)]
     return string
 
+
 def html_to_dict(file_name):
     film_dict = {}
     with open(file_name, 'rb') as html:

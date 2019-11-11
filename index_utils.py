@@ -93,5 +93,3 @@ def cosine_similar(search_keys, dataframe, label, min_talks=1):
 
 
 # cosine_similar('Doctors', dataframe.fillna('None'), 'Title', 3)
-
-dataframe = utils.load_data(utils.list_links_file_in_directory_by_extension('Wikipedia/', '.tsv')[0])

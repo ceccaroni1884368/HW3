@@ -55,7 +55,9 @@ def html_to_dict(file_name):
                 tr[i] = tr[i].replace("  ", ", ")
                 tr[i] = tr[i].replace("\n", ", ")
                 tr[i] = unicodedata.normalize("NFKD", tr[i])
-
+                for j in range(len(tr[i])-1):
+                    if tr[i][j].islower() and tr[i][j+1].isupper():
+                        tr[i]=tr[i][0:j]+", "+tr[i][j+1:len(tr[i])-1]
                 if 'Directed by' in tr[i][:11]:
                     film_dict.update({"Directed by": tr[i][11:].strip(', ')})
                 elif 'Produced by' in tr[i][:11]:
@@ -97,7 +99,7 @@ def html_to_dict(file_name):
     return film_dict
 
 
-print(html_to_dict('Wikipedia/article_199.html'))
+#print(html_to_dict('Wikipedia/article_199.html'))
 
 def save_tsv_dataframe(list_info_film):
     dataframe = pd.DataFrame(list_info_film)

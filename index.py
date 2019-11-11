@@ -17,4 +17,4 @@ for i in range(len(dataframe[['Intro']])):
 
 index_utils.save_inverted_index(documents)
 
-#print(index_utils.cosine_similar('Doctors', dataframe.fillna('None'), 'Title', 3))
+#print(index_utils.cosine_similar('Disney', dataframe.fillna('None'), 'Plot', 20))

@@ -13,7 +13,7 @@ dataframe = utils.load_data(utils.list_links_file_in_directory_by_extension('Wik
 
 documents = []
 for i in range(len(dataframe[['Intro']])):
-    documents.append(str(dataframe['Intro'].iloc[i]) + str(dataframe['Plot'].iloc[i]))
+    documents.append(index_utils.format_document(str(dataframe['Intro'].iloc[i]) + str(dataframe['Plot'].iloc[i])))
 
 index_utils.save_inverted_index(documents)
 

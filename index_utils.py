@@ -12,6 +12,8 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.stem import WordNetLemmatizer
 import json
 import math
+import pandas as pd
+
 
 
 def tokenizer(text):
@@ -78,6 +80,13 @@ def save_inverted_index(documents):
 
     with open('Json/inverted_index.json', 'w') as f:
         json.dump(idx, f)
+
+
+def cosine_similar(query, index_for_query):
+    # Cosine Similarity(Query,Document1) = Dot product(Query, Document1) / ||Query|| * ||Document1||
+    documents_tfidf = pd.DataFrame(index_for_query).fillna(0)
+    documents_tfidf.loc[:, 'den'] *= -1
+    pass
 
 
 """

@@ -7,7 +7,6 @@ python file that gathers the function used in parser.py
 from bs4 import BeautifulSoup as bs
 import re
 import unicodedata
-
 import pandas as pd
 
 

@@ -17,6 +17,23 @@ it should be able to choose:
 """
 
 import utils
-import collector
-import parser
-import index
+import index_utils
+import json
+
+
+dataframe = utils.load_dataframe()
+
+
+def conjunctive_query():
+    query = input("Search: ")
+    query = index_utils.format_document(query).split(" ")
+
+    with open('Json/inverted_index.json') as json_file:
+        inverted_index = json.load(json_file)
+
+    idx = set(inverted_index[query[0]])
+    for word in query:
+        idx = idx.intersection(inverted_index[word])
+    idx = list(idx)
+
+    return dataframe[['Title', 'Intro', 'Wikipedia Url']].iloc[idx]

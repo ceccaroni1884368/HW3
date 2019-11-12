@@ -22,3 +22,11 @@ def list_links_file_in_directory_by_extension(directory, extension):
 def load_data(path):
     dataframe = pd.read_csv(path, sep='\t')
     return dataframe
+
+
+def load_dataframe():
+    files = list_links_file_in_directory_by_extension('Wikipedia/', '.tsv')
+    frames = [load_data(f) for f in files]
+    result = pd.concat(frames, sort=True)
+    return result
+

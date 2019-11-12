@@ -6,17 +6,13 @@ python file that contains the functions
 used for creating indexes
 """
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-import pandas as pd
-import numpy as np
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
-from nltk.stem.porter import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem import WordNetLemmatizer
 import json
-import utils
+import math
+
 
 def tokenizer(text):
     tkenizer = RegexpTokenizer(r'\w+')
@@ -33,7 +29,6 @@ def word_lemmatizer(text):
 
 
 def word_stemmer(text):
-    # stemmer = PorterStemmer()
     stemmer = SnowballStemmer("english")
     return [stemmer.stem(w) for w in text]
 
@@ -62,14 +57,30 @@ def documents_index(documents, vocabulary):
     return documents_idx
 
 
+def tfidf(word, document, df, N):
+    tf = int(document.count(word))/len(document)
+    idf = math.log(N/df)
+    return tf * idf
+
+
+def save_format_documents(documents, name):
+    format_documents = []
+    for i in range(len(documents)):
+        format_documents.append(format_document(documents[i]))
+
+    with open('Json/' + name + '.json', 'w') as f:
+        json.dump(format_documents, f)
+
+
 def save_inverted_index(documents):
     vocabulary = get_vocabulary(documents)
     idx = documents_index(documents, vocabulary)
 
-    with open('inverted_index.json', 'w') as f:
+    with open('Json/inverted_index.json', 'w') as f:
         json.dump(idx, f)
 
 
+"""
 # https://medium.com/@deangelaneves/how-to-build-a-search-engine-from-scratch-in-python-part-1-96eb240f9ecb
 def cosine_similar(search_keys, dataframe, label, min_talks=1):
     tfidf_vectorizer = TfidfVectorizer()
@@ -90,6 +101,8 @@ def cosine_similar(search_keys, dataframe, label, min_talks=1):
         min_talks -= 1
 
     return dataframe_similarity.iloc[most_similar]
-
-
+    
+    
 # cosine_similar('Doctors', dataframe.fillna('None'), 'Title', 3)
+"""
+

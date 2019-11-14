@@ -19,6 +19,7 @@ it should be able to choose:
 import utils
 import index_utils
 import json
+import pandas as pd
 
 dataframe = utils.load_dataframe()
 
@@ -48,13 +49,20 @@ def conjunctive_query_and_ranking_score():
     with open('Json/inverted_index_score.json') as json_file:
         inverted_index_score = json.load(json_file)
 
-    index_for_query = {query[i]: {idx: tfidf for idx, tfidf in inverted_index_score[query[i]]}
-                       for i in range(len(query))}
+    index_for_query = {query[i]: {idx: tfidf for idx, tfidf in inverted_index_score[query[i]] }
+                       for i in range(len(query)) if query[i] in inverted_index_score}
 
     query = {query[i]: index_utils.tfidf(query[i], query, query.count(query[i]), len(query))
              for i in range(len(query))}
 
-    idx, score = index_utils.cosine_similar(query, index_for_query)
+    if index_for_query:
+        similar = index_utils.cosine_similar(query, index_for_query)
+        result = dataframe.join(similar)[['Title', 'Intro', 'Wikipedia Url', 'Similar']].sort_values(by='Similar',
+                                                                                                     ascending=False)
 
+        print(result)
+    else:
+        print('Not found')
 
-conjunctive_query_and_ranking_score()
+# conjunctive_query_and_ranking_score()
+print(conjunctive_query_and_ranking_score())

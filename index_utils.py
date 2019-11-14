@@ -85,8 +85,23 @@ def save_inverted_index(documents):
 def cosine_similar(query, index_for_query):
     # Cosine Similarity(Query,Document1) = Dot product(Query, Document1) / ||Query|| * ||Document1||
     documents_tfidf = pd.DataFrame(index_for_query).fillna(0)
-    documents_tfidf.loc[:, 'den'] *= -1
-    pass
+
+    col_list = list(documents_tfidf)
+
+    documents_tfidf.loc[:, 'den'] = (documents_tfidf.loc[:, col_list] ** 2)[col_list].sum(axis=1)
+    documents_tfidf.loc[:, 'den'] = documents_tfidf.loc[:, 'den'] ** (1/2)
+    documents_tfidf.loc[:, 'num'] = 0
+
+    query_mod = 0
+    for w in query:
+        if w in documents_tfidf:
+            documents_tfidf.loc[:, 'num'] += documents_tfidf.loc[:, w] * query[w]
+        query_mod += (query[w]**2)
+    query_mod = math.sqrt(query_mod)
+
+    documents_tfidf.loc[:, 'den'] *= query_mod
+    documents_tfidf.loc[:, 'Similar'] = documents_tfidf.loc[:, 'num'] / documents_tfidf.loc[:, 'den']
+    return documents_tfidf[['Similar']].sort_values(by=['Similar'], ascending=False)
 
 
 """

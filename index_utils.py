@@ -13,7 +13,8 @@ from nltk.stem import WordNetLemmatizer
 import json
 import math
 import pandas as pd
-
+import utils
+from collections import Counter
 
 
 def tokenizer(text):
@@ -27,7 +28,7 @@ def remove_stop_word(text):
 
 def word_lemmatizer(text):
     lemmatizater = WordNetLemmatizer()
-    return [lemmatizater.lemmatize(w) for w in text]
+    return [lemmatizater.lemmatize(w, pos="v") for w in text]
 
 
 def word_stemmer(text):
@@ -35,98 +36,35 @@ def word_stemmer(text):
     return [stemmer.stem(w) for w in text]
 
 
-def format_document(document):
-    return " ".join(word_stemmer(remove_stop_word(tokenizer(document.lower()))))
+def format_text(text):
+    text = text.lower()
+    text = tokenizer(text)
+    text = remove_stop_word(text)
+    text = word_lemmatizer(text)
+    return " ".join(text)
 
 
-def get_vocabulary(documents):
-    vocabulary = set()
-    for document in documents:
-        vocabulary = vocabulary.union(set(tokenizer(document)))
+def generate_format_intro_plot_df(dataframe):
+    dataframe.loc[:, 'Intro+Plot'] = dataframe.fillna('').loc[:, 'Intro'] + dataframe.fillna('').loc[:, 'Plot']
+    dataframe['Intro+Plot'] = dataframe['Intro+Plot'].apply(lambda x: format_text(x))
+    dataframe.to_json(r'Json\dataframe_format_intro_plot.json', index=False, orient='table')
+    return dataframe
 
+
+def generate_vocabulary_df(dataframe_df):
+    vocabulary = list(set((' '.join(dataframe_df['Intro+Plot'].tolist())).split(' ')))
+    vocabulary.remove('')
+    vocabulary = pd.DataFrame(vocabulary, columns=['Word'])
+    vocabulary.to_json(r'Json\vocabulary.json', index=False, orient='table')
     return vocabulary
 
 
-def documents_index(documents, vocabulary):
-    documents_idx = {}
-    for word in vocabulary:
-        documents_idx[word] = set()
-        for idx in range(len(documents)):
-            if word in documents[idx].lower():
-                documents_idx[word].add(idx)
-        documents_idx[word] = list(documents_idx[word])
-
-    return documents_idx
+def generate_tf_idf_df(inverted_index):
+    pass
 
 
-def tfidf(word, document, df, N):
-    tf = int(document.count(word))/len(document)
-    idf = math.log(N/df)
-    return tf * idf
+def save_dataframe(dataframe, name_file):
+    name_file = 'tsv/' + name_file + '.tsv'
+    dataframe.to_csv(name_file, sep='\t', index=False)
 
-
-def save_format_documents(documents, name):
-    format_documents = []
-    for i in range(len(documents)):
-        format_documents.append(format_document(documents[i]))
-
-    with open('Json/' + name + '.json', 'w') as f:
-        json.dump(format_documents, f)
-
-
-def save_inverted_index(documents):
-    vocabulary = get_vocabulary(documents)
-    idx = documents_index(documents, vocabulary)
-
-    with open('Json/inverted_index.json', 'w') as f:
-        json.dump(idx, f)
-
-
-def cosine_similar(query, index_for_query):
-    # Cosine Similarity(Query,Document1) = Dot product(Query, Document1) / ||Query|| * ||Document1||
-    documents_tfidf = pd.DataFrame(index_for_query).fillna(0)
-
-    col_list = list(documents_tfidf)
-
-    documents_tfidf.loc[:, 'den'] = (documents_tfidf.loc[:, col_list] ** 2)[col_list].sum(axis=1)
-    documents_tfidf.loc[:, 'den'] = documents_tfidf.loc[:, 'den'] ** (1/2)
-    documents_tfidf.loc[:, 'num'] = 0
-
-    query_mod = 0
-    for w in query:
-        if w in documents_tfidf:
-            documents_tfidf.loc[:, 'num'] += documents_tfidf.loc[:, w] * query[w]
-        query_mod += (query[w]**2)
-    query_mod = math.sqrt(query_mod)
-
-    documents_tfidf.loc[:, 'den'] *= query_mod
-    documents_tfidf.loc[:, 'Similar'] = documents_tfidf.loc[:, 'num'] / documents_tfidf.loc[:, 'den']
-    return documents_tfidf[['Similar']].sort_values(by=['Similar'], ascending=False)
-
-
-"""
-# https://medium.com/@deangelaneves/how-to-build-a-search-engine-from-scratch-in-python-part-1-96eb240f9ecb
-def cosine_similar(search_keys, dataframe, label, min_talks=1):
-    tfidf_vectorizer = TfidfVectorizer()
-    tfidf_weights_matrix = tfidf_vectorizer.fit_transform(dataframe.loc[:, label])
-    search_query_weights = tfidf_vectorizer.transform([search_keys])
-
-    cosine_distance = cosine_similarity(search_query_weights, tfidf_weights_matrix)
-    similarity_list = cosine_distance[0]
-
-    dataframe_similarity = dataframe.join(pd.DataFrame(similarity_list, columns=['Similarity']))
-
-    most_similar = []
-
-    while min_talks > 0:
-        tmp_index = np.argmax(similarity_list)
-        most_similar.append(tmp_index)
-        similarity_list[tmp_index] = 0
-        min_talks -= 1
-
-    return dataframe_similarity.iloc[most_similar]
-    
-    
-# cosine_similar('Doctors', dataframe.fillna('None'), 'Title', 3)
-"""
 

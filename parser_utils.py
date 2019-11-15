@@ -105,10 +105,8 @@ def html_to_dict(file_name):
     return film_dict
 
 
-#print(html_to_dict('Wikipedia/article_199.html'))
-
 def save_tsv_dataframe(list_info_film):
     dataframe = pd.DataFrame(list_info_film)
     n_file = input("Number of movies file (1, 2, 3): ")
-    name_file = 'Wikipedia/movie' + n_file + '.tsv'
+    name_file = 'Wikipedia/tsv/movie' + n_file + '.tsv'
     dataframe.to_csv(name_file, sep='\t', index=False)

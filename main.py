@@ -24,7 +24,22 @@ import index_utils
 index = index.InvertedIndex(index.idx)
 
 
-#search_term = input("Enter term(s) to search: ")
-#result = index.lookup_conjunctive_query(index_utils.format_text(search_term))
-#print(result)
-index.generate_tfidf()
+def menu():
+    choice = 0
+    while choice != 1 and choice != 2:
+        print("1 - Search without score\n2 - Search with score")
+        choice = int(input("Number (1 - 2): "))
+
+    result = 'None'
+    search_term = input("Enter term(s) to search: ")
+    if choice == 1:
+        result = index.lookup_conjunctive_query(index_utils.format_text(search_term))
+    elif choice == 2:
+        result = index.lookup_conjunctive_query_and_ranking_score(index_utils.format_text(search_term))
+
+    return result
+
+
+while True:
+    print(menu())
+

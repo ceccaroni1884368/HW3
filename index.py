@@ -84,6 +84,11 @@ class InvertedIndex:
 
         return dataframe[['Title', 'Intro', 'Wikipedia Url']].iloc[list(idx_set)]
 
+    def generate_tfidf(self):
+        for word in self.index:
+            for doc_dict in self.index[x]:
+                doc_dict['frequency'] = (doc_dict['frequency'] / len(dataframe_df['Intro+Plot'].iloc[doc_dict['docId']]))
+
     def lookup_query_conjunctive_query_and_ranking_score(self, query):
         """
         Returns the dictionary of terms with their correspondent Appearances.

@@ -24,6 +24,7 @@ import index_utils
 index = index.InvertedIndex(index.idx)
 
 
-search_term = input("Enter term(s) to search: ")
-result = index.lookup_conjunctive_query(index_utils.format_text(search_term))
-print(result)
+#search_term = input("Enter term(s) to search: ")
+#result = index.lookup_conjunctive_query(index_utils.format_text(search_term))
+#print(result)
+index.generate_tfidf()

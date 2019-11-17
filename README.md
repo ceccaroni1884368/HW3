@@ -15,11 +15,12 @@
 
  * `main.ipynb`: a Jupyter notebook
 
- * `data` folder:
- * `Wikipedia` folder:
- * `Json` folder:
-  * `inverted_index_dict.json`:
-  * `inverted_index_tfidf.json`:
-  * `vocabulary.json`:
-  * `dataframe_format_intro_plot.json`:
-  * `dataframe_format_all.json`:
+ * `data` *folder*: a folder with html pages with Wikipedia links
+ * `Wikipedia` *folder*: a folder where the collector.py download the html page
+  * `tsv` *folder*: a folder where the parser.py save the file tsv
+ * `Json` *folder*: a folder with json files saved
+  * `inverted_index_dict.json`: inverted index used in Search engine 2.1
+  * `inverted_index_tfidf.json`: inverted index  with tfidf score used in Search engine 2.2
+  * `vocabulary.json`: vocabulary
+  * `dataframe_format_intro_plot.json`: dataframe used in Search engine 2.1 and 2.2
+  * `dataframe_format_all.json`: dataframe used in Search engine 3

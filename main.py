@@ -26,7 +26,7 @@ inverted_index = index.InvertedIndex(index.idx)
 
 def menu():
     choice = 0
-    print("1 - Search without score\n2 - Search with score\n 3- Search with 'new' score!")
+    print("1 - Search without score\n2 - Search with score\n3- Search with 'new' score!")
     while choice != 1 and choice != 2 and choice != 3:
         choice = int(input("Number (1, 2, 3): "))
 

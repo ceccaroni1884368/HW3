@@ -178,7 +178,7 @@ except:
         idx = json.load(f)
 
 
-def define_new_score(query, k):
+def define_new_score(query, k=5):
     # Trovare per cosa cercare + ripulire testo
     heap = []
     try:
@@ -191,13 +191,9 @@ def define_new_score(query, k):
 
     for i in range(len(what)):
         heapq.heappush(heap, [index_utils.get_jaccard_sim(format_query, str(what.iloc[i])), i])
-    result = {int(x[1]): (1 - float(x[0])) for x in heapq.nlargest(k, heap) if float(x[0]) > 0}
 
-    if result:
-        new_score_df = pd.DataFrame(heapq.nlargest(k, heap), columns=['Similarity', 'idx'])
-        df_similarity = pd.merge(dataframe[['Title', 'Intro', 'Wikipedia Url']], new_score_df[['Similarity', 'idx']],
-                                 left_index=True, right_on='idx', sort=True)
-        df_similarity = df_similarity.sort_values(by=['Similarity'], ascending=False)
-        return df_similarity[['Title', 'Intro', 'Wikipedia Url', 'Similarity']]
-    else:
-        return 'Not Found'
+    new_score_df = pd.DataFrame(heapq.nlargest(k, heap), columns=['Similarity', 'idx'])
+    df_similarity = pd.merge(dataframe[['Title', 'Intro', 'Wikipedia Url']], new_score_df[['Similarity', 'idx']],
+                             left_index=True, right_on='idx', sort=True)
+    df_similarity = df_similarity.sort_values(by=['Similarity'], ascending=False)
+    return df_similarity[['Title', 'Intro', 'Wikipedia Url', 'Similarity']]

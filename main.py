@@ -37,8 +37,8 @@ def menu():
     elif choice == 2:
         result = inverted_index.lookup_conjunctive_query_and_ranking_score(index_utils.format_text(search_term))
     elif choice == 3:
-        result = index.define_new_score(search_term, 10)
-
+        result, actor = index.define_new_score(search_term, 10)
+        utils.print_actor(actor)
     return result
 
 

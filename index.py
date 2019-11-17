@@ -9,6 +9,7 @@ the indexes of the Search engines
 import utils
 import pandas as pd
 import json
+import re
 import index_utils
 from math import log, sqrt
 import heapq
@@ -193,7 +194,11 @@ def define_new_score(query, k=5):
         heapq.heappush(heap, [index_utils.get_jaccard_sim(format_query, str(what.iloc[i])), i])
 
     new_score_df = pd.DataFrame(heapq.nlargest(k, heap), columns=['Similarity', 'idx'])
-    df_similarity = pd.merge(dataframe[['Title', 'Intro', 'Wikipedia Url']], new_score_df[['Similarity', 'idx']],
+    df_similarity = pd.merge(dataframe[['Title', 'Intro', 'Wikipedia Url', 'Starring']],
+                             new_score_df[['Similarity', 'idx']],
                              left_index=True, right_on='idx', sort=True)
     df_similarity = df_similarity.sort_values(by=['Similarity'], ascending=False)
-    return df_similarity[['Title', 'Intro', 'Wikipedia Url', 'Similarity']]
+
+    actor = [re.sub(r'Mc,', '', df_similarity['Starring'].iloc[i]).split(',')
+             for i in range(len(df_similarity['Starring']))]
+    return df_similarity[['Title', 'Intro', 'Wikipedia Url', 'Similarity']], actor

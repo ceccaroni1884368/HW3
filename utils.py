@@ -30,3 +30,7 @@ def load_dataframe():
     result = pd.concat(frames, sort=True)
     return result
 
+
+def print_actor(list_actor):
+    print(list_actor)
+

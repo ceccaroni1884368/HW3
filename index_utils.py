@@ -59,12 +59,24 @@ def generate_vocabulary_df(dataframe_df):
     return vocabulary
 
 
-def generate_tf_idf_df(inverted_index):
-    pass
+def generate_format_for_new_score(dataframe):
+    what = dataframe[['Title', 'Written by', 'Directed by', 'Distributed by']]
+    what = what.fillna('')
+    col = what.columns
+    what.loc[:, 'All'] = what.loc[:, col[0]]
+    for i in range(1, len(col)):
+        what.loc[:, 'All'] += what.loc[:, col[i]]
+    what['All'] = what['All'].apply(lambda x: format_text(x))
+    what.to_json(r'Json\dataframe_format_all.json', index=False, orient='table')
+    return what
+
+def get_jaccard_sim(str1, str2):
+    a = set(str1.split())
+    b = set(str2.split())
+    c = a.intersection(b)
+    return float(len(c)) / (len(a) + len(b) - len(c))
 
 
 def save_dataframe(dataframe, name_file):
     name_file = 'tsv/' + name_file + '.tsv'
     dataframe.to_csv(name_file, sep='\t', index=False)
-
-

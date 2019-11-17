@@ -11,10 +11,11 @@ import pandas as pd
 import json
 import index_utils
 from math import log, sqrt
+import heapq
 
 
 # Dataframe
-dataframe = utils.load_dataframe().reset_index()
+dataframe = utils.load_dataframe().reset_index(drop=True)
 
 # Dataframe (Intro + Plot) Documents
 try:
@@ -176,25 +177,27 @@ except:
     with open(r'Json\inverted_index_dict.json', 'r') as f:
         idx = json.load(f)
 
-"""
-def cosine_similar(query, index_for_query):
-    # Cosine Similarity(Query,Document1) = Dot product(Query, Document1) / ||Query|| * ||Document1||
-    documents_tfidf = pd.DataFrame(index_for_query).fillna(0)
 
-    col_list = list(documents_tfidf)
+def define_new_score(query, k):
+    # Trovare per cosa cercare + ripulire testo
+    heap = []
+    try:
+        what = pd.read_json(r'Json\dataframe_format_all.json', orient='table')
+    except:
+        what = index_utils.generate_format_for_new_score(dataframe)
 
-    documents_tfidf.loc[:, 'den'] = (documents_tfidf.loc[:, col_list] ** 2)[col_list].sum(axis=1)
-    documents_tfidf.loc[:, 'den'] = documents_tfidf.loc[:, 'den'] ** (1/2)
-    documents_tfidf.loc[:, 'num'] = 0
+    what = what[['All']]
+    format_query = index_utils.format_text(query)
 
-    query_mod = 0
-    for w in query:
-        if w in documents_tfidf:
-            documents_tfidf.loc[:, 'num'] += documents_tfidf.loc[:, w] * query[w]
-        query_mod += (query[w]**2)
-    query_mod = math.sqrt(query_mod)
+    for i in range(len(what)):
+        heapq.heappush(heap, [index_utils.get_jaccard_sim(format_query, str(what.iloc[i])), i])
+    result = {int(x[1]): float(x[0])for x in heapq.nlargest(k, heap) if float(x[0]) > 0}
 
-    documents_tfidf.loc[:, 'den'] *= query_mod
-    documents_tfidf.loc[:, 'Similar'] = documents_tfidf.loc[:, 'num'] / documents_tfidf.loc[:, 'den']
-    return documents_tfidf[['Similar']].sort_values(by=['Similar'], ascending=False)
-"""
+    if result:
+        new_score_df = pd.DataFrame(heapq.nlargest(k, heap), columns=['Similarity', 'idx'])
+        df_similarity = pd.merge(dataframe[['Title', 'Intro', 'Wikipedia Url']], new_score_df[['Similarity', 'idx']],
+                                 left_index=True, right_on='idx', sort=True)
+        df_similarity = df_similarity.sort_values(by=['Similarity'], ascending=False)
+        return df_similarity[['Title', 'Intro', 'Wikipedia Url', 'Similarity']]
+    else:
+        return 'Not Found'

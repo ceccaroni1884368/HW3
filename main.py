@@ -21,25 +21,25 @@ import index
 import index_utils
 
 
-index = index.InvertedIndex(index.idx)
+inverted_index = index.InvertedIndex(index.idx)
 
 
 def menu():
     choice = 0
-    while choice != 1 and choice != 2:
-        print("1 - Search without score\n2 - Search with score")
-        choice = int(input("Number (1 - 2): "))
+    print("1 - Search without score\n2 - Search with score\n 3- Search with 'new' score!")
+    while choice != 1 and choice != 2 and choice != 3:
+        choice = int(input("Number (1, 2, 3): "))
 
     result = 'None'
     search_term = input("Enter term(s) to search: ")
     if choice == 1:
-        result = index.lookup_conjunctive_query(index_utils.format_text(search_term))
+        result = inverted_index.lookup_conjunctive_query(index_utils.format_text(search_term))
     elif choice == 2:
-        result = index.lookup_conjunctive_query_and_ranking_score(index_utils.format_text(search_term))
+        result = inverted_index.lookup_conjunctive_query_and_ranking_score(index_utils.format_text(search_term))
+    elif choice == 3:
+        result = index.define_new_score(search_term, 10)
 
     return result
 
 
-while True:
-    print(menu())
-
+print(menu())

@@ -191,7 +191,7 @@ def define_new_score(query, k):
 
     for i in range(len(what)):
         heapq.heappush(heap, [index_utils.get_jaccard_sim(format_query, str(what.iloc[i])), i])
-    result = {int(x[1]): float(x[0])for x in heapq.nlargest(k, heap) if float(x[0]) > 0}
+    result = {int(x[1]): (1 - float(x[0])) for x in heapq.nlargest(k, heap) if float(x[0]) > 0}
 
     if result:
         new_score_df = pd.DataFrame(heapq.nlargest(k, heap), columns=['Similarity', 'idx'])

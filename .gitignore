@@ -127,3 +127,7 @@ dmypy.json
 
 # Wikipedia
 Wikipedia/*.html
+
+
+# Other
+group_info.txt

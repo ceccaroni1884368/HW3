@@ -33,18 +33,26 @@ def html_to_dict(file_name):
         film_dict.update({"Title": page_title})
 
         # Paragraphers (Intro and Plot)
-        p = soup.find_all("p")
-
-        if len(p) >= 1:
-            intro = p[0].text
-            intro = re.sub(r'\n', '', intro)
-            intro = re.sub(r'\[\d*\]', '', intro)
-            film_dict.update({"Intro": intro})
-        if len(p) >= 2:
-            plot = p[1].text
-            plot = re.sub(r'\n', '', plot)
-            plot = re.sub(r'\[\d*\]', '', plot)
-            film_dict.update({"Plot": plot})
+        intro=""
+        plot=""
+        temp=True
+        for tag in soup.find("div", class_="mw-parser-output").contents:
+            if tag.name=="h2":
+                if temp:
+                    temp=False
+                else:
+                    break
+            elif tag.name=="p":
+                if temp==True:
+                    intro+=tag.text
+                    intro = re.sub(r'\n', '', intro)
+                    intro = re.sub(r'\[\d*\]', '', intro)
+                else:
+                    plot+=tag.text
+                    plot = re.sub(r'\n', '', plot)
+                    plot = re.sub(r'\[\d*\]', '', plot)
+        film_dict.update({"Intro": intro})
+        film_dict.update({"Plot": plot})
 
         # URL
         urls = soup.find("link", {"rel": "canonical", 'href': True})

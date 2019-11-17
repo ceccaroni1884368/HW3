@@ -24,3 +24,5 @@
    * `vocabulary.json`: vocabulary
    * `dataframe_format_intro_plot.json`: dataframe used in Search engine 2.1 and 2.2
    * `dataframe_format_all.json`: dataframe used in Search engine 3
+
+ * `requirement.txt`: file with all python library used

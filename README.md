@@ -18,8 +18,8 @@
  * `data` folder:
  * `Wikipedia` folder:
  * `Json` folder:
-* * `inverted_index_dict.json`:
-* * `inverted_index_tfidf.json`:
-* * `vocabulary.json`:
-* * `dataframe_format_intro_plot.json`:
-* * `dataframe_format_all.json`:
+  * `inverted_index_dict.json`:
+  * `inverted_index_tfidf.json`:
+  * `vocabulary.json`:
+  * `dataframe_format_intro_plot.json`:
+  * `dataframe_format_all.json`:
